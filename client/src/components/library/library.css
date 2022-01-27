@@ -1,0 +1,51 @@
+.table thead th{
+    text-align: center;
+    font-size: 18px;
+}
+.table tbody td{
+    vertical-align: middle;
+}
+.table tbody td div{
+    width: 100%;
+    min-width: 100px;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+    color: darkolivegreen;
+    font-weight: bold;
+}
+.table tbody td img{
+    width: 100px;
+    height: 100px;
+} 
+.table tbody td div button{
+    outline: none;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-transform: capitalize;
+    background-color: darkolivegreen;
+    color: #fff;
+} 
+.library p{
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+.library div{
+    display: flex;
+    justify-content: center;
+}
+.library div button{
+    outline: none;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-transform: capitalize;
+    background-color: darkolivegreen;
+    color: #fff;
+}

@@ -1,0 +1,65 @@
+.home-section{
+    flex-basis: 100%;
+    margin-top: 20px;
+}
+.home-section .home-header{
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+    column-gap: 25%;
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+    background-color: rgb(250, 248, 248);
+    margin-bottom: 20px;
+    padding: 5px 10px;
+}
+
+.home-section .home-header .filtering select{
+    display: block;
+    width: 100%;
+    padding: 2px;
+    outline: none;
+    border: none;
+    padding: 8px 5px;
+    border-radius: 2px;
+    text-transform: capitalize;
+    font-size: 16.5px;
+    border: 1px solid darkolivegreen;
+    background-color: inherit;
+}
+.home-section .home-header .deleteing{
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+.home-section .home-header .deleteing div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-transform: capitalize;
+    font-size: 18px;
+    color: rgb(96, 117, 60);
+    font-weight: bold;
+}
+.home-section .home-header .deleteing div input{
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.home-section .home-header .deleteing button{
+    outline: none;
+    border: none;
+    background-color: rgb(96, 117, 60);
+    border-radius: 5px;
+    padding: 5px 20px;
+    color: #fff;
+    text-transform: capitalize;
+    font-size: 18px;
+}
+.home-section .books{
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+    gap: 30px;
+}

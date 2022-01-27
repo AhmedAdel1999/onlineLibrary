@@ -1,0 +1,60 @@
+.singlebook{
+    padding: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.singlebook .bookview{
+    display: grid;
+    grid-template-columns: repeat(2,minmax(250px,49%));
+    gap: 30px 20px;
+}
+@media (max-width:750px){
+    .singlebook .bookview{
+        grid-template-columns: repeat(1,minmax(300px,1fr));
+    }
+}
+.bookview .book-img{
+    position: relative;
+}
+.bookview .book-img img{
+    width: 100%;
+    height: 100%;
+}
+.bookview .book-desc h3{
+   text-transform: capitalize;
+   margin-bottom: 10px;
+   color: darkolivegreen;
+   transform: translateY(-6px) ;
+}
+.bookview .book-desc p{
+  margin-bottom: 0px;
+  color: #444;
+  line-height: 2rem;
+}
+.singlebook .book-routes{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+.singlebook .book-routes button{
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 20px;
+  text-transform: capitalize;
+  background-color: darkolivegreen;
+  color: #fff;
+  font-size: 18px;
+}
+.singlebook .relatedbooks h3{
+    text-transform: capitalize;
+    margin-bottom: 10px;
+    color: darkolivegreen;
+}
+.singlebook .relatedbooks .books-cards{
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+    gap: 30px;
+}
