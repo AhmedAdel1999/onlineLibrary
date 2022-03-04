@@ -12,7 +12,7 @@ const PdfViewer = () =>{
     <div className="pdfviewer" style={{flexBasis:"100%"}}>
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
         <Viewer
-         fileUrl={`http://localhost:5000/pdf/${url}`}
+         fileUrl={`https://onlinebookapi.herokuapp.com/pdf/${url}`}
          plugins={[defaultLayoutPluginInstance,]}
         />
         </Worker>

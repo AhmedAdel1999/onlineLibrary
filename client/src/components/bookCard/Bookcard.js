@@ -45,7 +45,7 @@ const Bookcard = ({id,category,title,imgSrc,isAdmin,isCheck,deleteBook}) =>{
                     autoDismiss:"true"
                 })
             }else{
-                 dispatch(AddToLibrary({id:userId,bookdata:cuurentBook}))
+                dispatch(AddToLibrary({id:userId,bookdata:cuurentBook}))
             }
         }else{
             notify(`Please You Have To Login First!`,{
@@ -65,9 +65,9 @@ const Bookcard = ({id,category,title,imgSrc,isAdmin,isCheck,deleteBook}) =>{
                 :
                 null
                 }
+                <span>{catchCategory(category)}</span>
             </div>
             <h3>{title}</h3>
-            <p>catgory: <span>{catchCategory(category)}</span></p>
             {
                 isAdmin?
                 <div className="routes">

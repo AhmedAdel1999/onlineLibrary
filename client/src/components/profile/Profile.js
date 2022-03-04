@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams,useHistory } from "react-router";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
-import { DeleteAcount, logout, UpdateAccount, UserData,clearState } from "../../features/library/userSlice";
+import Ring from "react-cssfx-loading/lib/Ring"
+import { DeleteAcount, logout, UpdateAccount, UserData,clearState, imgUpload } from "../../features/library/userSlice";
 import { useToasts } from "react-toast-notifications";
 import { fileUpload } from "../utils/uploadFiles";
 import "./profile.css"
 
 const Profile = () =>{
     
-    const {userInfo,isError,isSuccess,errorMsg} = useSelector((state)=>state.user)
+    const {userInfo,isError,isSuccess,isLoading,errorMsg} = useSelector((state)=>state.user)
     const dispatch = useDispatch()
     const history = useHistory()
     const {id} = useParams()
@@ -39,7 +40,8 @@ const Profile = () =>{
     useEffect(()=>{
       const fun = async () =>{
         await dispatch(UserData(id))
-        dispatch(clearState())
+        await dispatch(clearState())
+        history.push("/")
       }
      if(isSuccess){
         notify(`profile has been updated!`,{
@@ -47,7 +49,6 @@ const Profile = () =>{
           autoDismiss:"true"
         })
         fun();
-        history.push("/")
      }
      else if(isError){
         notify(`${errorMsg}`,{
@@ -62,6 +63,7 @@ const Profile = () =>{
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (file) {
+          await dispatch(imgUpload())
           const image = await fileUpload(file);
           img = image
         }
@@ -138,7 +140,11 @@ const Profile = () =>{
           </div>
           <div className="settingsSubmit">
             <button type="submit">
-               Update
+              <span>Update</span>
+              {
+                isLoading&&
+                <Ring color="#FFF" width="25px" height="25px" duration="1s" />
+              } 
             </button>
           </div>
         </form>

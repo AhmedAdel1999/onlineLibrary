@@ -13,6 +13,7 @@ const Library = () =>{
     const dispatch = useDispatch()
     const Library = useSelector((state)=>state.user.Library)
     const bookList = useSelector((state)=>state.books.bookList)
+    console.log(Library)
 
     const updateLib = () =>{
         let newLib=[]

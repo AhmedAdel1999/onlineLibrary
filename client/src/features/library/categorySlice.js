@@ -1,5 +1,5 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
-import axios from "axios"
+import axiosInstance from '../../components/utils/baseUrl';
 const initialState = {
   categories:[],
   isError:false,
@@ -13,7 +13,7 @@ export const createCategory =createAsyncThunk(
     "category/createCategory",
     async(obj,{rejectWithValue,fulfillWithValue})=>{
       try {
-        let response = await axios.post("http://localhost:5000/category",{...obj})
+        let response = await axiosInstance.post("/category",{...obj})
         return fulfillWithValue(await response.data)
       } catch (error) {
         return rejectWithValue(error.response)
@@ -24,7 +24,7 @@ export const createCategory =createAsyncThunk(
     "category/updateCategory",
     async({id,name},{rejectWithValue,fulfillWithValue})=>{
       try {
-        let response = await axios.put(`http://localhost:5000/category/${id}`,{...name})
+        let response = await axiosInstance.put(`/category/${id}`,{...name})
         return fulfillWithValue(await response.data)
       } catch (error) {
         return rejectWithValue(error.response)
@@ -35,7 +35,7 @@ export const createCategory =createAsyncThunk(
     "category/deleteCategory",
     async(id,{rejectWithValue,fulfillWithValue})=>{
       try {
-        let response = axios.delete(`http://localhost:5000/category/${id}`)
+        let response = axiosInstance.delete(`/category/${id}`)
         return fulfillWithValue(await response.data)
       } catch (error) {
         return rejectWithValue(error.response)
@@ -46,7 +46,7 @@ export const createCategory =createAsyncThunk(
     "category/ourCategory",
     async()=>{
       try {
-        let response = await axios.get("http://localhost:5000/category")
+        let response = await axiosInstance.get("/category")
         return await response.data
       } catch (error) {
         return error.response

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {BrowserRouter,Route,Switch} from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux";
 import Register from './components/auth/Register';
@@ -24,8 +24,9 @@ import './App.css';
 
 
 const App = () => {
-  const token = useSelector((state)=>state.user.token)
-  const userId = useSelector((state)=>state.user.userId)
+  const token= useSelector((state)=>state.user.token)
+  const userId= useSelector((state)=>state.user.userId)
+  const[AppHeight,setAppHeight]=useState(`100vh`)
   const isAdmin = Authuser()
   const dispatch = useDispatch()
   
@@ -35,12 +36,13 @@ const App = () => {
      }
      dispatch(Allbooks())
      dispatch(ourCategory())
-  },[token,dispatch])
+     setAppHeight(`${window.innerHeight - 2}px`)
+  },[token])
 
   
   return (
     <BrowserRouter>
-      <div className="App">
+      <div className="App" style={{height:AppHeight}}>
         <Navroute/>
         <ScrollButton />
         <Switch>
@@ -62,3 +64,4 @@ const App = () => {
 }
 
 export default App;
+        

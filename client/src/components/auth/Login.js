@@ -7,14 +7,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLock } from '@fortawesome/free-solid-svg-icons'
 import { clearState, login } from "../../features/library/userSlice";
 import { useToasts } from "react-toast-notifications";
+import Load from "../utils/Load";
 import ErrorMsg from "../utils/errorMsg"
 import * as Yup from "yup";
 import "./auth.css"
 
 
+
 const Login = () => {
 
-  const{isSuccess,isError,errorMsg} = useSelector((state)=>state.user)
+  const{isSuccess,isError,isLoading,errorMsg} = useSelector((state)=>state.user)
   const dispatch = useDispatch();
   const history = useHistory()
   const { addToast:notify } = useToasts()
@@ -42,6 +44,10 @@ const Login = () => {
       password:Yup.string().min(6, 'Too Short!').required("required"),
     })
     return schema
+  }
+
+  if(isLoading){
+    return <Load />
   }
 
   return (

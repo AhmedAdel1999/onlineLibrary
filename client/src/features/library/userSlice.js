@@ -1,10 +1,11 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
-import axios from "axios"
+import axiosInstance from '../../components/utils/baseUrl';
 const initialState = {
   token:null,
   userId:"",
   isError:false,
   isSuccess:false,
+  isLoading:false,
   errorMsg:"",
   successMsg:"",
   userInfo:{},
@@ -16,7 +17,7 @@ export const joinUser = createAsyncThunk(
   "user/joinUser",
   async(values,{fulfillWithValue,rejectWithValue})=>{
      try {
-      let response = await axios.post("http://localhost:5000/user/register",values)
+      let response = await axiosInstance.post("/user/register",values)
       return fulfillWithValue( await response.data)
      } catch (error) {
        return rejectWithValue(error.response)
@@ -28,7 +29,7 @@ export const login = createAsyncThunk(
   "user/login",
   async(values,{fulfillWithValue,rejectWithValue})=>{
      try {
-      let response = await axios.post("http://localhost:5000/user/login",values)
+      let response = await axiosInstance.post("/user/login",values)
       return fulfillWithValue( await response.data)
      } catch (error) {
        return rejectWithValue(error.response)
@@ -40,7 +41,7 @@ export const UpdateAccount =createAsyncThunk(
   "user/UpdateAccount",
   async({id,info},{rejectWithValue,fulfillWithValue})=>{
     try {
-      let response = await axios.put(`http://localhost:5000/user/edituser/${id}`,{...info})
+      let response = await axiosInstance.put(`/user/edituser/${id}`,{...info})
       return fulfillWithValue(await response.data)
     } catch (error) {
       return rejectWithValue(error.response)
@@ -52,7 +53,7 @@ export const DeleteAcount =createAsyncThunk(
   "user/DeleteAcount",
   async(id,{fulfillWithValue,rejectWithValue})=>{
     try {
-      let response = await axios.delete(`http://localhost:5000/user/delete/${id}`)
+      let response = await axiosInstance.delete(`/user/delete/${id}`)
       return fulfillWithValue(await response.data)
     } catch (error) {
       return rejectWithValue(error.response)
@@ -63,7 +64,7 @@ export const UserData =createAsyncThunk(
   "user/UserData",
   async(id,{fulfillWithValue,rejectWithValue})=>{
     try {
-      let response = await axios.get(`http://localhost:5000/user/${id}`)
+      let response = await axiosInstance.get(`/user/${id}`)
       return fulfillWithValue(await response.data)
     } catch (error) {
       return rejectWithValue(error.response)
@@ -74,7 +75,8 @@ export const AddToLibrary =createAsyncThunk(
   "user/AddToLibrary",
   async({id,bookdata},{rejectWithValue,fulfillWithValue})=>{
     try {
-      let response = await axios.post(`http://localhost:5000/user/addtolibrary/${id}`,bookdata)
+      let response = await axiosInstance.post(`/user/addtolibrary/${id}`,bookdata)
+     console.log(response)
       return fulfillWithValue(await response.data.booklibrary)
     } catch (error) {
       return rejectWithValue(error.response)
@@ -85,7 +87,7 @@ export const UpdateLibrary =createAsyncThunk(
   "user/UpdateLibrary",
   async({id,bookdata},{fulfillWithValue,rejectWithValue})=>{
     try {
-      let response = await axios.put(`http://localhost:5000/user/updatelibrary/${id}`,bookdata)
+      let response = await axiosInstance.put(`/user/updatelibrary/${id}`,bookdata)
       return fulfillWithValue(await response.data.booklibrary)
     } catch (error) {
       return rejectWithValue(error.response)
@@ -96,7 +98,7 @@ export const DeleteOne =createAsyncThunk(
   "user/DeleteOne",
   async({id,bookdata},{fulfillWithValue,rejectWithValue})=>{
     try {
-      let response = await axios.put(`http://localhost:5000/user/deletefromlibrary/${id}`,bookdata)
+      let response = await axiosInstance.put(`/user/deletefromlibrary/${id}`,bookdata)
       return fulfillWithValue(await response.data.booklibrary)
     } catch (error) {
       return rejectWithValue(error.response)
@@ -113,6 +115,9 @@ export const userSlice = createSlice({
       state.Library=[]
       state.userId=""
     }),
+    imgUpload:((state)=>{
+      state.isLoading=true
+    }),
     clearState:((state)=>{
       state.isError=false;
       state.isSuccess=false;
@@ -122,31 +127,46 @@ export const userSlice = createSlice({
   },
   extraReducers:{
     //register user
+    [joinUser.pending]:((state)=>{
+      state.isLoading=true;
+    }),
     [joinUser.fulfilled]:((state)=>{
       state.isSuccess=true;
+      state.isLoading=false;
     }),
     [joinUser.rejected]:((state,action)=>{
       state.isError=true;
+      state.isLoading=false;
       state.errorMsg=`${action.payload.data.msg}`
     }),
 
     //login user
+    [login.pending]:((state,action)=>{
+      state.isLoading=true;
+    }),
     [login.fulfilled]:((state,action)=>{
       state.isSuccess=true;
+      state.isLoading=false;
       state.userId=action.payload.id;
-      state.token=action.payload.token
+      state.token=action.payload.token;
     }),
     [login.rejected]:((state,action)=>{
       state.isError=true;
+      state.isLoading=false;
       state.errorMsg=`${action.payload.data.msg}`
     }),
 
     //update account
+    [UpdateAccount.pending]:((state)=>{
+      state.isLoading=true;
+    }),
     [UpdateAccount.fulfilled]:((state)=>{
       state.isSuccess=true;
+      state.isLoading=false;
     }),
     [UpdateAccount.rejected]:((state,action)=>{
       state.isError=true;
+      state.isLoading=false;
       state.errorMsg=`${action.payload.data.msg}`
     }),
 
@@ -165,6 +185,7 @@ export const userSlice = createSlice({
     //Add book to library
     [AddToLibrary.fulfilled]:((state,action)=>{
       state.userInfo={...state.userInfo,booklibrary:[...action.payload]}
+      state.Library=[...action.payload]
       state.isSuccess=true;
       state.successMsg=`Book Has Been Added To Library!`
     }),
@@ -188,5 +209,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const {logout,clearState} = userSlice.actions
+export const {logout,clearState,imgUpload} = userSlice.actions
 export default userSlice.reducer;

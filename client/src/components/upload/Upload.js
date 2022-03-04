@@ -3,17 +3,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes,faLongArrowAltLeft } from '@fortawesome/free-solid-svg-icons'
 import { useToasts } from "react-toast-notifications";
-import { Addbook, Updatebook,clearState,Allbooks } from "../../features/library/booksSlice";
+import Ring from "react-cssfx-loading/lib/Ring"
+import { Addbook, Updatebook,clearState,Allbooks, imgOrFileUpload } from "../../features/library/booksSlice";
 import { useParams,useHistory } from "react-router";
 import { fileUpload } from "../utils/uploadFiles";
-import axios from "axios";
+import axiosInstance from "../utils/baseUrl";
 import "./upload.css"
 
 
 const Upload = () =>{
 
     const categories = useSelector((state)=>state.category.categories)
-    const {bookList,isError,isSuccess,errorMsg,successMsg} = useSelector((state)=>state.books)
+    const {bookList,isError,isSuccess,isLoading,errorMsg,successMsg} = useSelector((state)=>state.books)
     const{id}=useParams()
     const dispatch = useDispatch();
     const { addToast:notify } = useToasts()
@@ -85,15 +86,18 @@ const Upload = () =>{
         if(file){size=file.size}
         try {
             if(image&&file===null){
+                await dispatch(imgOrFileUpload())
                 const res = await fileUpload(image)
                 img= res
             }else if(file&&image===null){
-                const ress= await axios.post('http://localhost:5000/upload', filedata)
+                await dispatch(imgOrFileUpload())
+                const ress= await axiosInstance.post('/upload', filedata)
                 filename=await ress.data.filename
             }else if(file&&image){
+                await dispatch(imgOrFileUpload())
                 const res = await fileUpload(image)
                 img= res
-                const ress= await axios.post('http://localhost:5000/upload', filedata)
+                const ress= await axiosInstance.post('/upload', filedata)
                 filename=await ress.data.filename
             }else{
                 notify(`you have to choose image and pdf file together`,{
@@ -118,6 +122,7 @@ const Upload = () =>{
                 appearance: 'error',
                 autoDismiss:"true"
             })
+            dispatch(clearState())
         }else{
             dispatch(Addbook({...data,image:img,filename:filename,size:size}))
         }
@@ -162,7 +167,25 @@ const Upload = () =>{
                 })}
              </select>
              <button type="submit">
-               {Edit?"Update":"Upload"}
+             {
+                Edit?
+                <React.Fragment>
+                    <span>Update</span>
+                    {
+                    isLoading&&
+                    <Ring color="#FFF" width="25px" height="25px" duration="1s" />
+                    } 
+                </React.Fragment>
+                :
+                <React.Fragment>
+                    <span>Upload</span>
+                    {
+                    isLoading&&
+                    <Ring color="#FFF" width="25px" height="25px" duration="1s" />
+                    } 
+                    
+                </React.Fragment>
+            }
              </button>
           </form>
           <button className="backward" onClick={()=>history.goBack()}>

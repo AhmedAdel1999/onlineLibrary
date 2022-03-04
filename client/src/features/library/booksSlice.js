@@ -1,9 +1,10 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
-import axios from "axios"
+import axiosInstance from '../../components/utils/baseUrl';
 const initialState = {
   bookList:[],
   isError:false,
   isSuccess:false,
+  isLoading:false,
   errorMsg:"",
   successMsg:"",
   status: 'idle',
@@ -13,7 +14,7 @@ export const Addbook =createAsyncThunk(
   "books/Addbook",
   async(obj,{rejectWithValue,fulfillWithValue})=>{
     try {
-      let response = await axios.post(`http://localhost:5000/bookList/add`,obj)
+      let response = await axiosInstance.post(`/bookList/add`,obj)
       return fulfillWithValue(await response.data)
     } catch (error) {
       return rejectWithValue(error.response)
@@ -25,7 +26,7 @@ export const Updatebook =createAsyncThunk(
   async(obj,{fulfillWithValue,rejectWithValue})=>{
     const {id,bookdata}=obj
     try {
-      let response = await axios.put(`http://localhost:5000/booklist/edit/${id}`,{...bookdata})
+      let response = await axiosInstance.put(`/booklist/edit/${id}`,{...bookdata})
       return fulfillWithValue(await response.data)
     } catch (error) {
       return rejectWithValue(error.response)
@@ -36,7 +37,7 @@ export const Allbooks =createAsyncThunk(
   "books/Allbooks",
   async()=>{
     try {
-      let response = await axios.get(`http://localhost:5000/bookList`)
+      let response = await axiosInstance.get(`/bookList`)
       return await response.data
     } catch (error) {
       return error.response
@@ -47,7 +48,7 @@ export const deletebook =createAsyncThunk(
   "books/deletebook",
   async(id,{rejectWithValue,fulfillWithValue})=>{
     try {
-      let response = await axios.delete(`http://localhost:5000/booklist/${id}`)
+      let response = await axiosInstance.delete(`/booklist/${id}`)
       return fulfillWithValue(await response.data)
     } catch (error) {
       return rejectWithValue(error.response)
@@ -62,7 +63,7 @@ export const deleteAllbooks =createAsyncThunk(
       try {
         if(bookList[i].isCheck){
           testCheack=true
-          let response = await axios.delete(`http://localhost:5000/booklist/${bookList[i]._id}`)
+          let response = await axiosInstance.delete(`/booklist/${bookList[i]._id}`)
         }
       } catch (error) {
         return rejectWithValue(error.response)
@@ -83,8 +84,12 @@ export const booksSlice = createSlice({
     clearState:((state)=>{
       state.isError=false;
       state.isSuccess=false;
+      state.isLoading=false
       state.errorMsg="";
       state.successMsg=""
+    }),
+    imgOrFileUpload:((state)=>{
+      state.isLoading=true
     }),
     checkAll:((state,action)=>{
       let newbookList=[]
@@ -104,22 +109,32 @@ export const booksSlice = createSlice({
   },
   extraReducers:{
     //Add book
+    [Addbook.pending]:((state)=>{
+      state.isLoading=true;
+    }),
     [Addbook.fulfilled]:((state)=>{
       state.isSuccess=true;
+      state.isLoading=false;
       state.successMsg=`A New Book Has Been Added Successfully`
     }),
     [Addbook.rejected]:((state)=>{
       state.isError=true;
+      state.isLoading=false;
       state.errorMsg=`Error!! Failed To Add New Book`
     }),
 
     //update book
+    [Updatebook.pending]:((state)=>{
+      state.isLoading=true;
+    }),
     [Updatebook.fulfilled]:((state)=>{
       state.isSuccess=true;
+      state.isLoading=false;
       state.successMsg=`A Book Has Been Updated Successfully`
     }),
     [Updatebook.rejected]:((state)=>{
       state.isError=true;
+      state.isLoading=false;
       state.errorMsg=`Error!! Failed To Update This Book`
     }),
 
@@ -150,5 +165,5 @@ export const booksSlice = createSlice({
     }),
   },
 });
-export const{checkAll,checkoneBook,clearState}=booksSlice.actions
+export const{checkAll,checkoneBook,clearState,imgOrFileUpload}=booksSlice.actions
 export default booksSlice.reducer;
